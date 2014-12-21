@@ -498,16 +498,6 @@ public class Board {
 		}
 	}
 
-	// phase 2 de yapýlacak.
-	/**
-	 * @requires
-	 * @modifies
-	 * @ensures
-	 */
-	public void updateStarBar() {
-
-	}
-
 	/**
 	 * @requires piece.x >= 0 and piece.x < width, piece.y >= 0 and piece.y <
 	 *           height, piece != null
@@ -1782,61 +1772,69 @@ public class Board {
 		}
 	}
 
-	@SuppressWarnings("unused")
-	public void removeRange(Lokum lokum, int range) throws Exception {
+	public void removeRange(Lokum lokum, int range) {
 		int X = lokum.getPosX();
 		int Y = lokum.getPosY();
-		Lokum temp = lokum;
-		if (lokum == null) {
-			throw NullPointerException;
-		} else if (range != 1 && range != 2) {
+		if (range != 1 && range != 2) {
 			// throw exception about can not remove the range.
-		} else if (range == 1) {
-			for (int i = 0; i < 3; i++) {
-				for (int j = 0; j < 3; j++) {
-					if (isWithinBoard(arrayOfPieces[Y - 1 + i][X - 1 + j])) {
-						arrayOfPieces[Y - 1 + j][X - 1 + i] = null;
-
+			System.out.println("Invalid input range");
+		} else if (lokum.getType() > 0) {
+			if (range == 1) {
+				for (int i = -1; i < 2; i++) {
+					for (int j = -1; j < 2; j++) {
+						if (Y + j < height && 0 <= Y + j && X + i < width
+								&& 0 <= X + i) {
+							Null lokumInst = new Null();
+							lokumInst.setPosY(Y + j);
+							lokumInst.setPosX(X + i);
+							arrayOfPieces[Y + j][X + i] = lokumInst;
+						}
 					}
 				}
-			}
-			arrayOfPieces[Y + 1][X] = temp;
-			arrayOfPieces[Y + 1][X].setPosX(X);
-			arrayOfPieces[Y + 1][X].setPosY(Y + 1);
-		} else if (range == 2) {
-			for (int i = 0; i < 5; i++) {
-				for (int j = 0; j < 5; j++) {
-					if (isWithinBoard(arrayOfPieces[Y - 2 + i][X - 2 + j])) {
-						arrayOfPieces[Y - 2 + j][X - 2 + i] = null;
-
+				setScore(Score.usingWrappedCalculation());
+				handleScoreModification();
+			} else if (range == 2) {
+				for (int i = -2; i < 3; i++) {
+					for (int j = -2; j < 3; j++) {
+						if (Y + j < height && 0 <= Y + j && X + i < width
+								&& 0 <= X + i) {
+							Null lokumInst = new Null();
+							lokumInst.setPosY(Y + j);
+							lokumInst.setPosX(X + i);
+							arrayOfPieces[Y + j][X + i] = lokumInst;
+						}
 					}
 				}
+				setScore(Score.usingDoubleWrappedCalculation());
+				handleScoreModification();
 			}
-			arrayOfPieces[Y + 2][X] = temp;
-			arrayOfPieces[Y + 2][X].setPosX(X);
-			arrayOfPieces[Y + 2][X].setPosY(Y + 2);
-			;
 		}
 	}
 
-	@SuppressWarnings("unused")
-	public int removedByUsingColorBomb(Lokum lokum, Lokum colorBomb)
-			throws Exception {
+	public void removedByUsingColorBomb(Lokum lokum, Lokum colorBomb) {
 		int type = lokum.getType();
+		int X = colorBomb.getPosX();
+		int Y = colorBomb.getPosY();
 		int counter = 0;
-		if (lokum == null) {
-			throw NullPointerException;
-		} else {
-			arrayOfPieces[colorBomb.getPosY()][colorBomb.getPosX()] = null;
+		if (lokum.getType() > 0) {
+			Null nullLokum = new Null();
+			nullLokum.setPosX(X);
+			nullLokum.setPosY(Y);
+			arrayOfPieces[Y][X] = nullLokum;
 			for (int i = 0; i < height; i++) {
 				for (int j = 0; j < width; j++) {
-					if (arrayOfPieces[j][i].getType() == type)
+					if (arrayOfPieces[j][i].getType() == type) {
 						counter++;
-					arrayOfPieces[j][i] = null;
+						Null nullLokum2 = new Null();
+						nullLokum2.setPosX(i);
+						nullLokum2.setPosY(j);
+						arrayOfPieces[j][i] = nullLokum2;
+					}
 				}
 			}
 		}
-		return counter;
+		setScore(Score.usingColorBombCalculation(counter));
+		handleScoreModification();
 	}
 
 	/**
@@ -1848,14 +1846,15 @@ public class Board {
 	 *          the whole piece in the horizontal line should be disappeared.
 	 */
 
-	public void removeRow(Lokum lokum) throws Exception {
-		if (lokum == null) {
-			throw NullPointerException;
-		} else {
-			for (int i = 0; i < width; i++) {
-				arrayOfPieces[lokum.getPosY()][i] = null;
-			}
+	public void removeRow(Lokum lokum) {
+		for (int i = 0; i < width; i++) {
+			Null nullLokum = new Null();
+			nullLokum.setPosX(lokum.getPosY());
+			nullLokum.setPosY(i);
+			arrayOfPieces[lokum.getPosY()][i] = nullLokum;
 		}
+		setScore(Score.usingStrippedCalculation(width));
+		handleScoreModification();
 	}
 
 	/**
@@ -1867,14 +1866,15 @@ public class Board {
 	 *          the whole piece in the vertical line should be disappeared.
 	 */
 
-	public void removeColumn(Lokum lokum) throws Exception {
-		if (lokum == null) {
-			throw NullPointerException;
-		} else {
-			for (int i = 0; i < height; i++) {
-				arrayOfPieces[i][lokum.getPosX()] = null;
-			}
+	public void removeColumn(Lokum lokum) {
+		for (int i = 0; i < height; i++) {
+			Null nullLokum = new Null();
+			nullLokum.setPosX(lokum.getPosX());
+			nullLokum.setPosY(i);
+			arrayOfPieces[i][lokum.getPosX()] = nullLokum;
 		}
+		setScore(Score.usingStrippedCalculation(height));
+		handleScoreModification();
 	}
 
 	/**
@@ -1950,7 +1950,7 @@ public class Board {
 			for (int j = 0; j < height; j++) {
 				remove((Lokum) arrayOfPieces[j][i]);
 				updateCrush();
-				Score.basicCalculation();
+				setScore(Score.basicCalculation());
 				handleScoreModification();
 			}
 		}
@@ -1986,7 +1986,7 @@ public class Board {
 		this.score += score;
 	}
 
-	public class GameWindow extends JPanel implements MouseListener {
+	private class GameWindow extends JPanel implements MouseListener {
 		private BufferedImage image;
 		private int numClick;
 
@@ -2109,6 +2109,7 @@ public class Board {
 						|| checkSequenceRight(firstPressed)) {
 					// printPieces();
 					Board.this.remove((Lokum) firstPressed);
+					removeRow((Lokum) secondPressed);
 					gameLevel.setNumberOfMovement();
 					gameLevel.handleMovementModification();
 					System.out.println("After Remove:");

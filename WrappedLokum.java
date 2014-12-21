@@ -79,4 +79,28 @@ public class WrappedLokum extends Lokum {
 		this.type = type;
 	}
 
+	@Override
+	public boolean isBasicLokum() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isWrappedLokum() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isStrippedLokum() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isColorBombLokum() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
