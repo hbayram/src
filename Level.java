@@ -10,17 +10,17 @@ import org.w3c.dom.Element;
 public class Level {
 
 	private int target;
-	private int highscore;
+	private int highScore;
 	private int numberOfMovement;
 	private int currentLevel;
 	private final PropertyChangeSupport PCS = new PropertyChangeSupport(this);
 
 	public Level() {
-		target = 15000;
-		highscore = 0;
+		target = 22000;
+		highScore = 0;
 		numberOfMovement = 25;
 		handleMovementModification();
-		currentLevel = 1;
+		currentLevel = 5;
 	}
 
 	public void addPropertyChangeListener(PropertyChangeListener l) {
@@ -43,12 +43,12 @@ public class Level {
 		this.target = target;
 	}
 
-	public int getHighscore() {
-		return highscore;
+	public int gethighScore() {
+		return highScore;
 	}
 
-	public void setHighscore(int highscore) {
-		this.highscore = highscore;
+	public void sethighScore(int highScore) {
+		this.highScore = highScore;
 	}
 
 	public int getNumberOfMovement() {
@@ -80,16 +80,6 @@ public class Level {
 		numberOfMovement = parseInt;
 	}
 
-	public void getXmlLevel(Document doc, Element element) {
-
-		String level_val = Integer.toString(getCurrentLevel());
-
-		Attr no = doc.createAttribute("level");
-
-		no.setValue(level_val);
-
-		element.setAttributeNode(no);
-
-	}
+	
 
 }

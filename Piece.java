@@ -16,17 +16,11 @@ public abstract class Piece {
 	public abstract int getPosX();
 	
 	public abstract int getPosY();
-	
-	public abstract String getSourceString();
-	
 	public abstract boolean isBasicLokum();
-	
-	public abstract boolean isWrappedLokum();
-	
-	public abstract boolean isStrippedLokum();
-	
-	public abstract boolean isColorBombLokum();
-	
-	
-	
+	public abstract boolean isWrappedLokum ();
+	public abstract boolean isStrippedLokum ();
+	public abstract boolean isColorBomb ();
+	public abstract boolean isTimerLokum();
+	public abstract String getSourceString();
+
 }

@@ -1,5 +1,6 @@
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,6 +10,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 //import javafx.beans.property.SetProperty;
+
+
+import java.text.DecimalFormat;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -36,7 +40,13 @@ public class GUI extends JFrame{
 	private JTextField field;
 	private JTextField moveField;
 	private JTextField targetField;
+	private JTextField timerField;
 	
+	
+	private JLabel timeLabel;
+	private DecimalFormat timeFormatter = new DecimalFormat("00");
+	private Choronometer a= new Choronometer();
+
 	
 	public GUI (Board board){
 		targetField = new JTextField();
@@ -79,12 +89,13 @@ public class GUI extends JFrame{
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 		
+		
 	}
+
 	
 	public void createPlayFrame() {
 		level.addPropertyChangeListener(new ChangeLevelListener());
 		board.addPropertyChangeListener(new ChangeScoreListener());
-		field.setEditable(false);
 		field.setText(""+0);
 		moveField.setEditable(false);
 		moveField.setText(""+level.getNumberOfMovement());
@@ -103,7 +114,18 @@ public class GUI extends JFrame{
 		showingPanel.add(targetField);
 		showingPanel.add(createLabel("Scores: "));
 		showingPanel.add(field);
+		timeLabel = new JLabel();
+        timeLabel.setFont(new Font("Consolas", Font.PLAIN, 13));
+      
+        timeLabel.setText(timeFormatter.format(a.getMinutes() )+ ":"
+                + timeFormatter.format(a.getSeconds()) + "."
+                + timeFormatter.format(a.getCentiseconds()));
+
+       
+		showingPanel.add(timeLabel);
 		exitPanel.add(createLabel(""));
+		
+		
 		
 		JButton exitButton = createButton("Exit");
 		exitButton.addActionListener(new CreatingExitFrame());
@@ -116,8 +138,7 @@ public class GUI extends JFrame{
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 	}
-	
-	public void createSettingsFrame() {
+public void createSettingsFrame() {
 		
 		JFrame frame = new JFrame();
 		JPanel panel = new JPanel();
@@ -125,9 +146,12 @@ public class GUI extends JFrame{
 		frame.setTitle("Chewy Lokum Legend");
 		frame.setSize(400,100);	
 		
-		JButton gameButton = createButton("Play New Game"); 
+		JButton gameButton = createButton("Play New Game");
 		panel.add(gameButton);
 		gameButton.addActionListener(new creatingPlayFrameAction());
+		gameButton.addActionListener(new startKronometre());
+		
+		
 		panel.add(SelectLevel);
 		panel.add(LoadedLevel);
 		frame.add(panel);
@@ -135,6 +159,7 @@ public class GUI extends JFrame{
 		frame.setResizable(false);
 		frame.setVisible(true);
 	}
+	
 	
 	public static JButton createButton(String string){
 		JButton button =  new JButton(string);
@@ -242,6 +267,17 @@ public class GUI extends JFrame{
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			createPlayFrame();			
+		}		
+	}
+	
+	
+
+	private class startKronometre implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			a.startChronometer() ;			
 		}		
 	}
 	

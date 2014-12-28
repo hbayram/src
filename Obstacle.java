@@ -60,7 +60,13 @@ public class Obstacle extends Piece {
 	}
 
 	@Override
-	public boolean isColorBombLokum() {
+	public boolean isColorBomb() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isTimerLokum() {
 		// TODO Auto-generated method stub
 		return false;
 	}

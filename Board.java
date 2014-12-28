@@ -24,6 +24,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -205,7 +206,7 @@ public class Board {
 
 				StreamResult result = new StreamResult(
 						new File(
-								"/Users/EmreCevik/Documents/workspace(Eclipse)/ChewyLokumLegend/src/xmls/saved.xml"));
+								"/src/xmls/emre.xml"));
 
 				// StreamResult console = new StreamResult (System.out);
 
@@ -230,8 +231,15 @@ public class Board {
 
 	}
 
-	private void getXmlLevel(Document doc, Element rootElement) {
-		// TODO Auto-generated method stub
+	public void getXmlLevel(Document doc, Element element) {
+
+		String level_val = Integer.toString(gameLevel.getCurrentLevel());
+
+		Attr no = doc.createAttribute("level");
+
+		no.setValue(level_val);
+
+		element.setAttributeNode(no);
 
 	}
 
@@ -1811,7 +1819,7 @@ public class Board {
 		}
 	}
 
-	public void removedByUsingColorBomb(Lokum lokum, Lokum colorBomb) {
+	public int removedByUsingColorBomb(Lokum lokum, Lokum colorBomb) {
 		int type = lokum.getType();
 		int X = colorBomb.getPosX();
 		int Y = colorBomb.getPosY();
@@ -1835,6 +1843,7 @@ public class Board {
 		}
 		setScore(Score.usingColorBombCalculation(counter));
 		handleScoreModification();
+		return counter;
 	}
 
 	/**
@@ -1884,10 +1893,301 @@ public class Board {
 	 * @ensures the whole element in the arrayOfPieces should be null. And the
 	 *          whole piece should be disappeared. Then, exit the game.
 	 */
-	public void clear() throws Exception {
+	public void clear() {
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
-				arrayOfPieces[i][j] = null;
+				// arrayOfPieces[i][j] = null;
+				Null nullLokum = new Null();
+				nullLokum.setPosX(i);
+				nullLokum.setPosY(j);
+				arrayOfPieces[i][j] = nullLokum;
+			}
+		}
+	}
+
+	public void checkAndRemoveColorBombProb(Lokum lokum) {
+		int X = lokum.getPosX();
+		int Y = lokum.getPosY();
+		int type = lokum.getType();
+
+		if (type > 0 && type < 5) {
+			if (Y + 4 < height) {
+				if (type == arrayOfPieces[Y + 4][X].getType()
+						&& type == arrayOfPieces[Y + 3][X].getType()
+						&& type == arrayOfPieces[Y + 2][X].getType()
+						&& type == arrayOfPieces[Y + 1][X].getType()) {
+					for (int i = 0; i < 5; i++) {
+						Lokum temp = (Lokum) arrayOfPieces[Y + i][X];
+						if (temp.isStrippedLokum()) {
+							if (((StrippedLokum) temp).isVertical())
+								removeColumn(temp);
+							removeRow(temp);
+						}
+						if (temp.isWrappedLokum())
+							removeRange(temp, 1);
+						Null nullLokum = new Null();
+						nullLokum.setPosX(X);
+						nullLokum.setPosX(Y + i);
+						arrayOfPieces[Y + i][X] = nullLokum;
+					}
+					ColorBombLokum bomb = new ColorBombLokum();
+					bomb.setPosX(X);
+					bomb.setPosY(Y + 4);
+					arrayOfPieces[Y + 4][X] = bomb;
+					return;
+				}
+			} else if (X + 4 < width) {
+				if (type == arrayOfPieces[Y][X + 4].getType()
+						&& type == arrayOfPieces[Y][X + 3].getType()
+						&& type == arrayOfPieces[Y][X + 2].getType()
+						&& type == arrayOfPieces[Y][X + 1].getType()) {
+					for (int i = 0; i < 5; i++) {
+						Lokum temp = (Lokum) arrayOfPieces[Y][X + i];
+						if (temp.isStrippedLokum()) {
+							if (((StrippedLokum) temp).isVertical())
+								removeColumn(temp);
+							removeRow(temp);
+						}
+						if (temp.isWrappedLokum())
+							removeRange(temp, 1);
+						Null nullLokum = new Null();
+						nullLokum.setPosX(X + i);
+						nullLokum.setPosX(Y);
+						arrayOfPieces[Y][X + i] = nullLokum;
+					}
+					ColorBombLokum bomb = new ColorBombLokum();
+					bomb.setPosX(X + 4);
+					bomb.setPosY(Y);
+					arrayOfPieces[Y][X + 4] = bomb;
+					return;
+				}
+			}
+		}
+
+	}
+
+	public void checkAndRemoveStrippedProb(Lokum lokum) {
+		int X = lokum.getPosX();
+		int Y = lokum.getPosY();
+		int type = lokum.getType();
+
+		if (type > 0 && type < 5) {
+			if (Y + 3 < height) {
+				if (type == arrayOfPieces[Y + 3][X].getType()
+						&& type == arrayOfPieces[Y + 2][X].getType()
+						&& type == arrayOfPieces[Y + 1][X].getType()) {
+					for (int i = 0; i < 4; i++) {
+						Lokum temp = (Lokum) arrayOfPieces[Y + i][X];
+						if (temp.isStrippedLokum()) {
+							if (((StrippedLokum) temp).isVertical())
+								removeColumn(temp);
+							removeRow(temp);
+						}
+						if (temp.isWrappedLokum())
+							removeRange(temp, 1);
+						Null nullLokum = new Null();
+						nullLokum.setPosX(X);
+						nullLokum.setPosX(Y + i);
+						arrayOfPieces[Y + i][X] = nullLokum;
+					}
+					StrippedLokum strpLokum = new StrippedLokum(type,
+							"horizontal");
+					strpLokum.setPosX(X);
+					strpLokum.setPosY(Y + 3);
+					arrayOfPieces[Y + 3][X] = strpLokum;
+					return;
+				}
+			} else if (X + 4 < width) {
+				if (type == arrayOfPieces[Y][X + 3].getType()
+						&& type == arrayOfPieces[Y][X + 2].getType()
+						&& type == arrayOfPieces[Y][X + 1].getType()) {
+					for (int i = 0; i < 4; i++) {
+						Lokum temp = (Lokum) arrayOfPieces[Y][X + i];
+						if (temp.isStrippedLokum()) {
+							if (((StrippedLokum) temp).isVertical())
+								removeColumn(temp);
+							removeRow(temp);
+						}
+						if (temp.isWrappedLokum())
+							removeRange(temp, 1);
+						Null nullLokum = new Null();
+						nullLokum.setPosX(X + i);
+						nullLokum.setPosX(Y);
+						arrayOfPieces[Y][X + i] = nullLokum;
+					}
+					StrippedLokum strpLokum = new StrippedLokum(type,
+							"vertical");
+					strpLokum.setPosX(X + 3);
+					strpLokum.setPosY(Y);
+					arrayOfPieces[Y][X + 3] = strpLokum;
+					return;
+				}
+			}
+		}
+
+	}
+
+	public void checkAndRemoveLShape(Lokum lokum) {
+		int X = lokum.getPosX();
+		int Y = lokum.getPosY();
+		int type = lokum.getType();
+
+		if (type > 0 && type < 5) {
+			if (X + 2 < width) {
+				if (Y + 2 < height) {
+					if (type == arrayOfPieces[Y + 1][X].getType()
+							&& type == arrayOfPieces[Y + 2][X].getType()
+							&& type == arrayOfPieces[Y + 2][X + 1].getType()
+							&& type == arrayOfPieces[Y + 2][X + 2].getType()) {
+						for (int i = 0; i < 3; i++) {
+							Lokum temp = (Lokum) arrayOfPieces[Y + i][X];
+							if (temp.isStrippedLokum()) {
+								if (((StrippedLokum) temp).isVertical())
+									removeColumn(temp);
+								removeRow(temp);
+							} else if (temp.isWrappedLokum())
+								removeRange(temp, 1);
+							Null nullLokum = new Null();
+							nullLokum.setPosX(X);
+							nullLokum.setPosX(Y + i);
+							arrayOfPieces[Y + i][X] = nullLokum;
+							if (i > 0) {
+								Lokum otherTemp = (Lokum) arrayOfPieces[Y + 2][X
+										+ i];
+								if (otherTemp.isStrippedLokum()) {
+									if (((StrippedLokum) otherTemp)
+											.isVertical())
+										removeColumn(otherTemp);
+									removeRow(otherTemp);
+								} else if (otherTemp.isWrappedLokum())
+									removeRange(otherTemp, 1);
+								Null otherNullLokum = new Null();
+								otherNullLokum.setPosX(X + i);
+								otherNullLokum.setPosX(Y + 2);
+								arrayOfPieces[Y + 2][X + i] = otherNullLokum;
+							}
+						}
+						WrappedLokum wrLok = new WrappedLokum(type);
+						wrLok.setPosX(X);
+						wrLok.setPosY(Y + 2);
+						arrayOfPieces[Y + 2][X] = wrLok;
+						return;
+					} else if (type == arrayOfPieces[Y + 1][X + 2].getType()
+							&& type == arrayOfPieces[Y + 2][X + 2].getType()
+							&& type == arrayOfPieces[Y][X + 1].getType()
+							&& type == arrayOfPieces[Y][X + 2].getType()) {
+						for (int i = 0; i < 3; i++) {
+							Lokum temp = (Lokum) arrayOfPieces[Y + i][X + 2];
+							if (temp.isStrippedLokum()) {
+								if (((StrippedLokum) temp).isVertical())
+									removeColumn(temp);
+								removeRow(temp);
+							} else if (temp.isWrappedLokum())
+								removeRange(temp, 1);
+							Null nullLokum = new Null();
+							nullLokum.setPosX(X + 2);
+							nullLokum.setPosX(Y + i);
+							arrayOfPieces[Y + i][X + 2] = nullLokum;
+							if (i < 2) {
+								Lokum otherTemp = (Lokum) arrayOfPieces[Y][X
+										+ i];
+								if (otherTemp.isStrippedLokum()) {
+									if (((StrippedLokum) otherTemp)
+											.isVertical())
+										removeColumn(otherTemp);
+									removeRow(otherTemp);
+								} else if (otherTemp.isWrappedLokum())
+									removeRange(otherTemp, 1);
+								Null otherNullLokum = new Null();
+								otherNullLokum.setPosX(X + i);
+								otherNullLokum.setPosX(Y);
+								arrayOfPieces[Y][X + i] = otherNullLokum;
+							}
+						}
+						WrappedLokum wrLok = new WrappedLokum(type);
+						wrLok.setPosX(X);
+						wrLok.setPosY(Y);
+						arrayOfPieces[Y][X] = wrLok;
+						return;
+					} else if (type == arrayOfPieces[Y + 1][X].getType()
+							&& type == arrayOfPieces[Y + 2][X].getType()
+							&& type == arrayOfPieces[Y][X + 1].getType()
+							&& type == arrayOfPieces[Y][X + 2].getType()) {
+						for (int i = 0; i < 3; i++) {
+							Lokum temp = (Lokum) arrayOfPieces[Y + i][X];
+							if (temp.isStrippedLokum()) {
+								if (((StrippedLokum) temp).isVertical())
+									removeColumn(temp);
+								removeRow(temp);
+							} else if (temp.isWrappedLokum())
+								removeRange(temp, 1);
+							Null nullLokum = new Null();
+							nullLokum.setPosX(X);
+							nullLokum.setPosX(Y + i);
+							arrayOfPieces[Y + i][X] = nullLokum;
+							if (i > 0) {
+								Lokum otherTemp = (Lokum) arrayOfPieces[Y][X
+										+ i];
+								if (otherTemp.isStrippedLokum()) {
+									if (((StrippedLokum) otherTemp)
+											.isVertical())
+										removeColumn(otherTemp);
+									removeRow(otherTemp);
+								} else if (otherTemp.isWrappedLokum())
+									removeRange(otherTemp, 1);
+								Null otherNullLokum = new Null();
+								otherNullLokum.setPosX(X + i);
+								otherNullLokum.setPosX(Y);
+								arrayOfPieces[Y][X + i] = otherNullLokum;
+							}
+						}
+						WrappedLokum wrLok = new WrappedLokum(type);
+						wrLok.setPosX(X);
+						wrLok.setPosY(Y + 2);
+						arrayOfPieces[Y + 2][X] = wrLok;
+						return;
+					}
+				}
+				if (Y - 2 >= 0) {
+					if (type == arrayOfPieces[Y][X + 1].getType()
+							&& type == arrayOfPieces[Y][X + 2].getType()
+							&& type == arrayOfPieces[Y - 1][X + 2].getType()
+							&& type == arrayOfPieces[Y - 2][X + 2].getType()) {
+						for (int i = 0; i < 3; i++) {
+							Lokum temp = (Lokum) arrayOfPieces[Y - i][X + 2];
+							if (temp.isStrippedLokum()) {
+								if (((StrippedLokum) temp).isVertical())
+									removeColumn(temp);
+								removeRow(temp);
+							} else if (temp.isWrappedLokum())
+								removeRange(temp, 1);
+							Null nullLokum = new Null();
+							nullLokum.setPosX(X + 2);
+							nullLokum.setPosX(Y - i);
+							arrayOfPieces[Y - i][X + 2] = nullLokum;
+							if (i < 2) {
+								Lokum otherTemp = (Lokum) arrayOfPieces[Y][X
+										+ i];
+								if (otherTemp.isStrippedLokum()) {
+									if (((StrippedLokum) otherTemp)
+											.isVertical())
+										removeColumn(otherTemp);
+									removeRow(otherTemp);
+								} else if (otherTemp.isWrappedLokum())
+									removeRange(otherTemp, 1);
+								Null otherNullLokum = new Null();
+								otherNullLokum.setPosX(X + i);
+								otherNullLokum.setPosX(Y);
+								arrayOfPieces[Y][X + i] = otherNullLokum;
+							}
+						}
+						WrappedLokum wrLok = new WrappedLokum(type);
+						wrLok.setPosX(X);
+						wrLok.setPosY(Y);
+						arrayOfPieces[Y][X] = wrLok;
+						return;
+					}
+				}
 			}
 		}
 	}
@@ -2041,7 +2341,7 @@ public class Board {
 				swapPiece(firstPressed, secondPressed);
 				revalidate();
 				repaint();
-				if (firstPressed.getType() == 5 || secondPressed.getType() == 5) {
+				if (firstPressed.isColorBomb() || secondPressed.isColorBomb()) {
 					specialCrush.crushByColorBomb(firstPressed, secondPressed);
 					gameLevel.setNumberOfMovement();
 					gameLevel.handleMovementModification();
@@ -2050,8 +2350,10 @@ public class Board {
 					repaint();
 					System.out.println(getScore());
 					return;
-				} else if (((firstPressed instanceof StrippedLokum) && (secondPressed instanceof WrappedLokum))
-						|| ((secondPressed instanceof StrippedLokum) && (firstPressed instanceof WrappedLokum))) {
+				} else if ((firstPressed.isStrippedLokum() && secondPressed
+						.isWrappedLokum())
+						|| (secondPressed.isStrippedLokum() && firstPressed
+								.isWrappedLokum())) {
 					specialCrush.crushByStrippedAndWrapped(firstPressed,
 							secondPressed);
 					gameLevel.setNumberOfMovement();
@@ -2061,8 +2363,10 @@ public class Board {
 					repaint();
 					System.out.println(getScore());
 					return;
-				} else if (((firstPressed instanceof StrippedLokum) && (secondPressed instanceof BasicLokum))
-						|| ((firstPressed instanceof BasicLokum) && (secondPressed instanceof StrippedLokum))) {
+				} else if ((firstPressed.isStrippedLokum() && secondPressed
+						.isBasicLokum())
+						|| (firstPressed.isBasicLokum() && secondPressed
+								.isStrippedLokum())) {
 					specialCrush.crushByStripped(firstPressed, secondPressed);
 					gameLevel.setNumberOfMovement();
 					gameLevel.handleMovementModification();
@@ -2071,8 +2375,10 @@ public class Board {
 					repaint();
 					System.out.println(getScore());
 					return;
-				} else if (((firstPressed instanceof WrappedLokum) && (secondPressed instanceof BasicLokum))
-						|| ((firstPressed instanceof BasicLokum) && (secondPressed instanceof WrappedLokum))) {
+				} else if ((firstPressed.isWrappedLokum() && secondPressed
+						.isBasicLokum())
+						|| (firstPressed.isBasicLokum() && secondPressed
+								.isWrappedLokum())) {
 					specialCrush.crushByWrapped(firstPressed, secondPressed);
 					gameLevel.setNumberOfMovement();
 					gameLevel.handleMovementModification();
@@ -2081,7 +2387,8 @@ public class Board {
 					repaint();
 					System.out.println(getScore());
 					return;
-				} else if (((firstPressed instanceof WrappedLokum) && (secondPressed instanceof WrappedLokum))) {
+				} else if ((firstPressed.isWrappedLokum() && secondPressed
+						.isWrappedLokum())) {
 					specialCrush.crushByDoubleWrapped(firstPressed,
 							secondPressed);
 					gameLevel.setNumberOfMovement();
@@ -2091,7 +2398,8 @@ public class Board {
 					repaint();
 					System.out.println(getScore());
 					return;
-				} else if (((firstPressed instanceof StrippedLokum) && (secondPressed instanceof StrippedLokum))) {
+				} else if ((firstPressed.isStrippedLokum() && secondPressed
+						.isStrippedLokum())) {
 					specialCrush.crushByDoubleStripped(firstPressed,
 							secondPressed);
 					gameLevel.setNumberOfMovement();
@@ -2107,30 +2415,25 @@ public class Board {
 						|| checkSequenceVerticalMiddle(firstPressed)
 						|| checkSequenceLeft(firstPressed)
 						|| checkSequenceRight(firstPressed)) {
-					// printPieces();
 					Board.this.remove((Lokum) firstPressed);
-					removeRow((Lokum) secondPressed);
+					if (checkSequenceDown(secondPressed)
+							|| checkSequenceUp(secondPressed)
+							|| checkSequenceHorizontalMiddle(secondPressed)
+							|| checkSequenceVerticalMiddle(secondPressed)
+							|| checkSequenceLeft(secondPressed)
+							|| checkSequenceRight(secondPressed)) {
+						Board.this.remove((Lokum) secondPressed);
+					}
 					gameLevel.setNumberOfMovement();
 					gameLevel.handleMovementModification();
 					System.out.println("After Remove:");
-					// printPieces();
+
 					updateCrush();
 					revalidate();
 					repaint();
 					System.out.println(getScore());
 					return;
-					// Board.updateCrush() buraya gelecek.
-				}
-				/*
-				 * if (checkSequenceDown(secondPressed) ||
-				 * checkSequenceUp(secondPressed) ||
-				 * checkSequenceHorizontalMiddle(secondPressed) ||
-				 * checkSequenceVerticalMiddle(secondPressed) ||
-				 * checkSequenceLeft(secondPressed) ||
-				 * checkSequenceRight(secondPressed)) {
-				 * Board.this.remove((Lokum) secondPressed); //
-				 * Board.updateCrush() buraya gelecek. }
-				 */else {
+				} else {
 					swapPiece(firstPressed, secondPressed);
 					revalidate();
 					repaint();

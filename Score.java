@@ -46,8 +46,8 @@ public class Score {
 		return usingStrippedCalculation(n) * n;
 	}
 	
-	public static int usingWrappedColorBombCalculation() {
-		return usingWrappedCalculation() * 2;
+	public static int usingWrappedColorBombCalculation(int n) {
+		return usingColorBombCalculation(n) * 2;
 	}
 	
 	public static int usingDoubleColorBombCalculation(int n) {

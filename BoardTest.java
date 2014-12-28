@@ -82,7 +82,7 @@ public class BoardTest {
 	     seqHor = Board.checkSequenceHorizontalMiddle(Board.getArrayOfPieces()[2][2]);
 	     
 	     Board.removeRange((Lokum) Board.getArrayOfPieces()[2][2], 1);
-	     counts = Board.removedByUsingColorBomb(new BasicLokum(2), temp2);
+	     Board.removedByUsingColorBomb(new BasicLokum(2), temp2);
 	     Board.removeRow((Lokum) Board.getArrayOfPieces()[2][2]);
 	     Board.removeColumn((Lokum) Board.getArrayOfPieces()[2][2]);
 	     randomLokum = Board.createRandomLokum();

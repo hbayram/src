@@ -54,15 +54,12 @@ public class StrippedLokum extends Lokum {
 		return posY;
 	}
 	
-	public void setPosX(int posX) {
-		// TODO Auto-generated method stub
-		this.posX=posX;
+	public void setPosX(int x){
+		this.posX = x;
 	}
-
-	@Override
-	public void setPosY(int posY) {
-		// TODO Auto-generated method stub
-		this.posY= posY;
+	
+	public void setPosY(int y){
+		this.posY = y;
 	}
 
 	public boolean isVertical() {
@@ -143,7 +140,14 @@ public class StrippedLokum extends Lokum {
 
 
 	@Override
-	public boolean isColorBombLokum() {
+	public boolean isColorBomb() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	@Override
+	public boolean isTimerLokum() {
 		// TODO Auto-generated method stub
 		return false;
 	}

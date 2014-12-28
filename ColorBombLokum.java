@@ -91,9 +91,16 @@ public class ColorBombLokum extends Lokum{
 
 
 	@Override
-	public boolean isColorBombLokum() {
+	public boolean isColorBomb() {
 		// TODO Auto-generated method stub
 		return true;
+	}
+
+
+	@Override
+	public boolean isTimerLokum() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 
